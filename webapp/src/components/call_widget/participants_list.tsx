@@ -17,6 +17,7 @@ type Props = {
     profiles: IDMappedObjects<UserProfile>;
     callHostID: string;
     onRemove: (sessionID: string, userID: string) => void;
+    onMuteToggle: (sessionID: string) => void;
     currentSession?: UserSessionState;
     screenSharingSession?: UserSessionState;
     callID?: string;
@@ -32,6 +33,7 @@ export const ParticipantsList = ({
     screenSharingSession,
     callID,
     myPreferences,
+    onMuteToggle,
 }: Props) => {
     const {formatMessage} = useIntl();
     const isHost = currentSession?.user_id === callHostID;
@@ -51,6 +53,7 @@ export const ParticipantsList = ({
                 callID={callID}
                 onRemove={() => onRemove(session.session_id, session.user_id)}
                 myPreferences={myPreferences}
+                onMuteToggle={() => onMuteToggle(session.session_id)}
             />
         ));
     };

@@ -165,6 +165,8 @@ interface State {
     leaveMenuOpen: boolean,
 }
 
+const audioTrackID = 'testid'
+
 export default class CallWidget extends React.PureComponent<Props, State> {
     private readonly node: React.RefObject<HTMLDivElement>;
     private readonly menuNode: React.RefObject<HTMLDivElement>;
@@ -383,7 +385,7 @@ export default class CallWidget extends React.PureComponent<Props, State> {
             audioEl.autoplay = true;
             audioEl.style.display = 'none';
             audioEl.onerror = (err) => logErr(err);
-            audioEl.setAttribute('data-testid', track.id);
+            audioEl.setAttribute(`data-${audioTrackID}`, track.id);
 
             const deviceID = window.callsClient?.currentAudioOutputDevice?.deviceId;
             if (deviceID) {
@@ -811,6 +813,20 @@ export default class CallWidget extends React.PureComponent<Props, State> {
             window.callsClient.mute();
         }
     };
+
+    onMuteToggleSession= (sessionId: string) => {
+        if (!window.callsClient) {
+            return;
+        }
+
+        const audio = this.state.audioEls.find(v => v.dataset[audioTrackID]?.includes(sessionId))
+
+        if (!audio) {
+            return
+        }
+
+        audio.muted = !audio.muted
+    }
 
     isMuted() {
         return this.props.currentSession ? !this.props.currentSession.unmuted : true;
@@ -2159,6 +2175,7 @@ export default class CallWidget extends React.PureComponent<Props, State> {
                             callID={this.props.channel.id}
                             onRemove={this.onRemove}
                             myPreferences={this.props.myPreferences}
+                            onMuteToggle={this.onMuteToggleSession}
                         />
                     }
                     {this.renderMenu()}

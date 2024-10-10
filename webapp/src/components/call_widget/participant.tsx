@@ -31,11 +31,12 @@ type Props = {
     iAmHost: boolean,
     isSharingScreen: boolean;
     onRemove: () => void;
+    onMuteToggle: () => void;
     callID?: string;
     myPreferences: Partial<ClientSideProps>
 };
 
-export const Participant = ({session, profile, isYou, isHost, iAmHost, isSharingScreen, onRemove, callID, myPreferences}: Props) => {
+export const Participant = ({session, profile, isYou, isHost, iAmHost, isSharingScreen, onRemove, onMuteToggle, callID, myPreferences}: Props) => {
     const {formatMessage} = useIntl();
     const {hoverOn, hoverOff, onOpenChange, showHostControls} = useHostControls(isYou, isHost, iAmHost);
 
@@ -61,6 +62,7 @@ export const Participant = ({session, profile, isYou, isHost, iAmHost, isSharing
         } else {
             myPreferences["mutedSessions"][session.session_id] = isMute
         }
+        onMuteToggle()
     }
 
     return (

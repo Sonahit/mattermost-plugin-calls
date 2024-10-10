@@ -1,5 +1,6 @@
 import {UserSessionState} from '@mattermost/calls-common/lib/types';
 import {UserProfile} from '@mattermost/types/users';
+import { savePreferences } from 'mattermost-redux/actions/preferences';
 import {Client4} from 'mattermost-redux/client';
 import React, {CSSProperties} from 'react';
 import {useIntl} from 'react-intl';
@@ -18,6 +19,10 @@ import UnmutedIcon from 'src/components/icons/unmuted_icon';
 import {getUserDisplayName} from 'src/utils';
 import styled, {css} from 'styled-components';
 
+type ClientSideProps = {
+    mutedSessions: Record<string, boolean>
+}
+
 type Props = {
     session: UserSessionState;
     profile?: UserProfile;
@@ -27,15 +32,17 @@ type Props = {
     isSharingScreen: boolean;
     onRemove: () => void;
     callID?: string;
+    myPreferences: Partial<ClientSideProps>
 };
 
-export const Participant = ({session, profile, isYou, isHost, iAmHost, isSharingScreen, onRemove, callID}: Props) => {
+export const Participant = ({session, profile, isYou, isHost, iAmHost, isSharingScreen, onRemove, callID, myPreferences}: Props) => {
     const {formatMessage} = useIntl();
     const {hoverOn, hoverOff, onOpenChange, showHostControls} = useHostControls(isYou, isHost, iAmHost);
 
     const isMuted = !session.unmuted;
     const isSpeaking = Boolean(session.voice);
     const isHandRaised = Boolean(session.raised_hand > 0);
+    const isClientMuted = !!myPreferences?.mutedSessions?.[session.session_id]
     let youStyle: CSSProperties = {color: 'rgba(var(--center-channel-color-rgb), 0.56)'};
     if (isYou && isHost) {
         youStyle = {...youStyle, marginLeft: '2px'};
@@ -45,6 +52,15 @@ export const Participant = ({session, profile, isYou, isHost, iAmHost, isSharing
 
     if (!profile) {
         return null;
+    }
+
+    const handleClientMute = () => {
+        const isMute = isClientMuted ? false : true
+        if (!myPreferences["mutedSessions"]) {
+            myPreferences["mutedSessions"] = {[session.session_id]: isMute}
+        } else {
+            myPreferences["mutedSessions"][session.session_id] = isMute
+        }
     }
 
     return (
@@ -146,6 +162,13 @@ export const Participant = ({session, profile, isYou, isHost, iAmHost, isSharing
                         />
                     </StyledDotMenu>
                 }
+
+                {isClientMuted && <MutedIcon
+                    data-testid={'muted'}
+                    fill={'rgba(var(--center-channel-color-rgb), 0.56)'}
+                    style={{width: '14px', height: '14px'}}
+                    onClick={handleClientMute}
+                />}
 
                 <MuteIcon
                     data-testid={isMuted ? 'muted' : 'unmuted'}

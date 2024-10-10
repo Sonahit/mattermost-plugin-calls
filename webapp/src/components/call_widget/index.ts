@@ -1,10 +1,10 @@
-import {GlobalState} from '@mattermost/types/store';
-import {getChannel} from 'mattermost-redux/selectors/entities/channels';
-import {getCurrentTeamId, getMyTeams, getTeam} from 'mattermost-redux/selectors/entities/teams';
-import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
-import {injectIntl} from 'react-intl';
-import {connect} from 'react-redux';
-import {bindActionCreators, Dispatch} from 'redux';
+import { GlobalState } from '@mattermost/types/store';
+import { getChannel } from 'mattermost-redux/selectors/entities/channels';
+import { getCurrentTeamId, getMyTeams, getTeam } from 'mattermost-redux/selectors/entities/teams';
+import { getCurrentUserId } from 'mattermost-redux/selectors/entities/users';
+import { injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
+import { bindActionCreators, Dispatch } from 'redux';
 import {
     openCallsUserSettings,
     recordingPromptDismissedAt,
@@ -21,6 +21,7 @@ import {
     clientConnecting,
     expandedView,
     getChannelUrlAndDisplayName,
+    getMyPreferences,
     hostChangeAtForCurrentCall,
     hostControlNoticesForCurrentCall,
     hostIDForCurrentCall,
@@ -37,8 +38,8 @@ import {
     threadIDForCallInChannel,
     transcriptionsEnabled,
 } from 'src/selectors';
-import {alphaSortSessions, stateSortSessions} from 'src/utils';
-import {modals} from 'src/webapp_globals';
+import { alphaSortSessions, stateSortSessions } from 'src/utils';
+import { modals } from 'src/webapp_globals';
 
 import CallWidget from './component';
 
@@ -57,7 +58,7 @@ const mapStateToProps = (state: GlobalState) => {
         .sort(alphaSortSessions(profiles))
         .sort(stateSortSessions(screenSharingSession?.session_id || '', true));
 
-    const {channelURL, channelDisplayName} = getChannelUrlAndDisplayName(state, channel);
+    const { channelURL, channelDisplayName } = getChannelUrlAndDisplayName(state, channel);
 
     const callThreadID = threadIDForCallInChannel(state, channel?.id || '');
 
@@ -87,6 +88,7 @@ const mapStateToProps = (state: GlobalState) => {
         clientConnecting: clientConnecting(state),
         callThreadID,
         recordingsEnabled: recordingsEnabled(state),
+        myPreferences: getMyPreferences(state)
     };
 };
 

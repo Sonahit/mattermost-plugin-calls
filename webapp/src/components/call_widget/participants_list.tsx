@@ -1,3 +1,4 @@
+import { PreferencesType } from '@mattermost/types/preferences';
 import './component.scss';
 
 import {UserSessionState} from '@mattermost/calls-common/lib/types';
@@ -19,6 +20,7 @@ type Props = {
     currentSession?: UserSessionState;
     screenSharingSession?: UserSessionState;
     callID?: string;
+    myPreferences: PreferencesType
 };
 
 export const ParticipantsList = ({
@@ -29,6 +31,7 @@ export const ParticipantsList = ({
     currentSession,
     screenSharingSession,
     callID,
+    myPreferences,
 }: Props) => {
     const {formatMessage} = useIntl();
     const isHost = currentSession?.user_id === callHostID;
@@ -47,6 +50,7 @@ export const ParticipantsList = ({
                 isSharingScreen={screenSharingSession?.session_id === session.session_id}
                 callID={callID}
                 onRemove={() => onRemove(session.session_id, session.user_id)}
+                myPreferences={myPreferences}
             />
         ));
     };

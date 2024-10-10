@@ -6,6 +6,7 @@ import {UserSessionState} from '@mattermost/calls-common/lib/types';
 import {Channel} from '@mattermost/types/channels';
 import {Team} from '@mattermost/types/teams';
 import {UserProfile} from '@mattermost/types/users';
+import {PreferencesType} from '@mattermost/types/preferences';
 import {IDMappedObjects} from '@mattermost/types/utilities';
 import {Client4} from 'mattermost-redux/client';
 import React, {CSSProperties} from 'react';
@@ -102,6 +103,7 @@ interface Props {
     sessions: UserSessionState[],
     sessionsMap: { [sessionID: string]: UserSessionState },
     currentSession?: UserSessionState,
+    myPreferences: PreferencesType,
     profiles: IDMappedObjects<UserProfile>,
     callStartAt: number,
     callHostID: string,
@@ -2156,6 +2158,7 @@ export default class CallWidget extends React.PureComponent<Props, State> {
                             screenSharingSession={this.props.screenSharingSession}
                             callID={this.props.channel.id}
                             onRemove={this.onRemove}
+                            myPreferences={this.props.myPreferences}
                         />
                     }
                     {this.renderMenu()}

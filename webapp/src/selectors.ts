@@ -1,14 +1,14 @@
-import {CallsConfig, Reaction, UserSessionState} from '@mattermost/calls-common/lib/types';
-import {Channel} from '@mattermost/types/channels';
-import {GlobalState} from '@mattermost/types/store';
-import {Team} from '@mattermost/types/teams';
-import {UserProfile} from '@mattermost/types/users';
-import {getAllChannels, getChannel, getCurrentChannelId} from 'mattermost-redux/selectors/entities/channels';
-import {getMyChannelMemberships} from 'mattermost-redux/selectors/entities/common';
-import {getLicense} from 'mattermost-redux/selectors/entities/general';
-import {getTeammateNameDisplaySetting} from 'mattermost-redux/selectors/entities/preferences';
-import {getMyChannelRoles, getMyTeamRoles} from 'mattermost-redux/selectors/entities/roles';
-import {getCurrentTeamId, getTeams} from 'mattermost-redux/selectors/entities/teams';
+import { CallsConfig, Reaction, UserSessionState } from '@mattermost/calls-common/lib/types';
+import { Channel } from '@mattermost/types/channels';
+import { GlobalState } from '@mattermost/types/store';
+import { Team } from '@mattermost/types/teams';
+import { UserProfile } from '@mattermost/types/users';
+import { getAllChannels, getChannel, getCurrentChannelId } from 'mattermost-redux/selectors/entities/channels';
+import { getMyChannelMemberships } from 'mattermost-redux/selectors/entities/common';
+import { getLicense } from 'mattermost-redux/selectors/entities/general';
+import { getTeammateNameDisplaySetting } from 'mattermost-redux/selectors/entities/preferences';
+import { getMyChannelRoles, getMyTeamRoles } from 'mattermost-redux/selectors/entities/roles';
+import { getCurrentTeamId, getTeams } from 'mattermost-redux/selectors/entities/teams';
 import {
     getCurrentUserId,
     getUserIdsInChannels,
@@ -22,8 +22,8 @@ import {
     isDirectChannel,
     isGroupChannel,
 } from 'mattermost-redux/utils/channel_utils';
-import {displayUsername} from 'mattermost-redux/utils/user_utils';
-import {createSelector} from 'reselect';
+import { displayUsername } from 'mattermost-redux/utils/user_utils';
+import { createSelector } from 'reselect';
 import {
     callsJobState,
     callState,
@@ -43,9 +43,10 @@ import {
     IncomingCallNotification,
     LiveCaptions,
 } from 'src/types/types';
-import {getCallsClientChannelID, getCallsClientInitTime, getCallsClientSessionID, getChannelURL} from 'src/utils';
+import { getCallsClientChannelID, getCallsClientInitTime, getCallsClientSessionID, getChannelURL } from 'src/utils';
 
-import {pluginId} from './manifest';
+import { pluginId } from './manifest';
+import { PreferenceType } from '@mattermost/types/preferences';
 
 //@ts-ignore GlobalState is not complete
 const pluginState = (state: GlobalState) => state['plugins-' + pluginId] || {};
@@ -59,6 +60,11 @@ export const channelIDForCurrentCall: (state: GlobalState) => string =
         clientState,
         (channelID, cState) => channelID || cState?.channelID || '',
     );
+
+
+export function getMyPreferences(state: GlobalState): { [x: string]: PreferenceType } {
+    return state.entities.preferences.myPreferences;
+}
 
 export const channelForCurrentCall: (state: GlobalState) => Channel | undefined =
     createSelector(
@@ -603,7 +609,7 @@ export const getChannelUrlAndDisplayName = (state: GlobalState, channel?: Channe
             channelDisplayName = channel.display_name;
         }
     }
-    return {channelURL, channelDisplayName};
+    return { channelURL, channelDisplayName };
 };
 
 export const getStatusForCurrentUser: (state: GlobalState) => string =

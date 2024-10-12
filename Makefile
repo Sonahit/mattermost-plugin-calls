@@ -323,6 +323,11 @@ dist: apply server webapp standalone bundle
 endif
 
 ## Builds and installs the plugin to a server.
+
+.PHONY: deploynow
+deploynow:
+	./build/bin/pluginctl deploy $(PLUGIN_ID) dist/$(BUNDLE_NAME)
+
 .PHONY: deploy
 deploy: dist
 	./build/bin/pluginctl deploy $(PLUGIN_ID) dist/$(BUNDLE_NAME)

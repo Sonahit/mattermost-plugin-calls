@@ -820,7 +820,6 @@ export default class CallWidget extends React.PureComponent<Props, State> {
         }
 
         const audio = this.state.audioEls.find(v => v.dataset[audioTrackID]?.includes(sessionId))
-
         if (!audio) {
             return
         }

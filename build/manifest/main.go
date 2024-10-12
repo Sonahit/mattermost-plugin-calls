@@ -3,12 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/mattermost/mattermost/server/public/model"
 	"io/ioutil"
 	"os"
 	"runtime"
 	"strconv"
 	"strings"
+
+	"github.com/mattermost/mattermost/server/public/model"
 
 	"github.com/pkg/errors"
 )
@@ -137,21 +138,21 @@ func findManifest() (*model.Manifest, error) {
 
 	// Update the manifest based on the state of the current commit
 	// Use the first version we find (to prevent causing errors)
-	var version string
-	tags := strings.Fields(BuildTagCurrent)
-	for _, t := range tags {
-		if strings.HasPrefix(t, "v") {
-			version = t
-			break
-		}
-	}
-	if version == "" {
-		version = BuildTagLatest + "+" + BuildHashShort
-	}
-	if strings.HasPrefix(version, "v") {
-		version = version[1:]
-	}
-	manifest.Version = version
+	// var version string
+	// tags := strings.Fields(BuildTagCurrent)
+	// for _, t := range tags {
+	// 	if strings.HasPrefix(t, "v") {
+	// 		version = t
+	// 		break
+	// 	}
+	// }
+	// if version == "" {
+	// 	version = BuildTagLatest + "+" + BuildHashShort
+	// }
+	// if strings.HasPrefix(version, "v") {
+	// 	version = version[1:]
+	// }
+	// manifest.Version = version
 
 	// Update the release notes url to point at the latest tag.
 	manifest.ReleaseNotesURL = manifest.HomepageURL + "releases/tag/" + BuildTagLatest

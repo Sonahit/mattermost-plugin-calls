@@ -50,6 +50,7 @@ export const Participant = ({session, profile, isYou, isHost, iAmHost, isSharing
     }
 
     const MuteIcon = isMuted ? MutedIcon : UnmutedIcon;
+    const ClientMuteIcon = isClientMuted ? MutedIcon : UnmutedIcon;
 
     if (!profile) {
         return null;
@@ -165,10 +166,10 @@ export const Participant = ({session, profile, isYou, isHost, iAmHost, isSharing
                     </StyledDotMenu>
                 }
 
-                {isClientMuted && <MutedIcon
-                    data-testid={'muted'}
-                    fill={'rgba(var(--center-channel-color-rgb), 0.56)'}
-                    style={{width: '14px', height: '14px'}}
+                {!isYou && <ClientMuteIcon
+                    data-testid={isClientMuted ? 'muted' : 'unmuted'}
+                    fill={isClientMuted ? 'rgba(var(--center-channel-color-rgb), 0.56)' : '#3DB887'}
+                    style={{width: '14px', height: '14px', cursor:"pointer"}}
                     onClick={handleClientMute}
                 />}
 

@@ -2,7 +2,7 @@ import {UserSessionState} from '@mattermost/calls-common/lib/types';
 import {UserProfile} from '@mattermost/types/users';
 import { savePreferences } from 'mattermost-redux/actions/preferences';
 import {Client4} from 'mattermost-redux/client';
-import React, {CSSProperties} from 'react';
+import React, {CSSProperties, useEffect, useState} from 'react';
 import {useIntl} from 'react-intl';
 import Avatar from 'src/components/avatar/avatar';
 import {HostBadge} from 'src/components/badge';
@@ -39,11 +39,11 @@ type Props = {
 export const Participant = ({session, profile, isYou, isHost, iAmHost, isSharingScreen, onRemove, onMuteToggle, callID, myPreferences}: Props) => {
     const {formatMessage} = useIntl();
     const {hoverOn, hoverOff, onOpenChange, showHostControls} = useHostControls(isYou, isHost, iAmHost);
+    const [isClientMuted, setIsClientMuted] = useState(!!myPreferences?.mutedSessions?.[session.session_id])
 
     const isMuted = !session.unmuted;
     const isSpeaking = Boolean(session.voice);
     const isHandRaised = Boolean(session.raised_hand > 0);
-    const isClientMuted = !!myPreferences?.mutedSessions?.[session.session_id]
     let youStyle: CSSProperties = {color: 'rgba(var(--center-channel-color-rgb), 0.56)'};
     if (isYou && isHost) {
         youStyle = {...youStyle, marginLeft: '2px'};
@@ -55,8 +55,7 @@ export const Participant = ({session, profile, isYou, isHost, iAmHost, isSharing
     if (!profile) {
         return null;
     }
-
-    const handleClientMute = () => {
+    useEffect(() => {
         const isMute = isClientMuted ? false : true
         if (!myPreferences["mutedSessions"]) {
             myPreferences["mutedSessions"] = {[session.session_id]: isMute}
@@ -64,7 +63,14 @@ export const Participant = ({session, profile, isYou, isHost, iAmHost, isSharing
             myPreferences["mutedSessions"][session.session_id] = isMute
         }
         onMuteToggle()
-    }
+
+        return () => {
+            if (myPreferences?.["mutedSessions"]) {
+                myPreferences["mutedSessions"][session.session_id] = false;
+            }
+            onMuteToggle()
+        }
+    }, [isClientMuted])
 
     return (
         <ParticipantListItem
@@ -170,7 +176,7 @@ export const Participant = ({session, profile, isYou, isHost, iAmHost, isSharing
                     data-testid={isClientMuted ? 'muted' : 'unmuted'}
                     fill={isClientMuted ? 'rgba(var(--center-channel-color-rgb), 0.56)' : '#3DB887'}
                     style={{width: '14px', height: '14px', cursor:"pointer"}}
-                    onClick={handleClientMute}
+                    onClick={() => setIsClientMuted(!isClientMuted)}
                 />}
 
                 <MuteIcon

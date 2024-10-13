@@ -1,8 +1,8 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import {CallsConfig, LiveCaption, RTCStats, TranscribeAPI} from '@mattermost/calls-common/lib/types';
-import {MessageDescriptor} from 'react-intl';
+import { CallsConfig, LiveCaption, RTCStats, TranscribeAPI } from '@mattermost/calls-common/lib/types';
+import { MessageDescriptor } from 'react-intl';
 
 export const CallsConfigDefault: CallsConfig = {
     ICEServers: [],
@@ -246,3 +246,7 @@ export const DesktopMessageShowEndCallModal = {
 export type DesktopMessage = {
     type: DesktopMessageType;
 };
+
+export type ClientSideProps = {
+    mutedSessions: Record<string, boolean>
+}

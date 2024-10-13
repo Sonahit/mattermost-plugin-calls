@@ -69,6 +69,7 @@ import {
     CallAlertStates,
     CallAlertStatesDefault,
     CallJobReduxState,
+    ClientSideProps,
     HostControlNotice,
     IncomingCallNotification,
     RemoveConfirmationData,
@@ -103,7 +104,7 @@ interface Props {
     sessions: UserSessionState[],
     sessionsMap: { [sessionID: string]: UserSessionState },
     currentSession?: UserSessionState,
-    myPreferences: PreferencesType,
+    myPreferences: PreferencesType & ClientSideProps,
     profiles: IDMappedObjects<UserProfile>,
     callStartAt: number,
     callHostID: string,
@@ -378,6 +379,7 @@ export default class CallWidget extends React.PureComponent<Props, State> {
 
     private attachVoiceTracks(tracks: MediaStreamTrack[]) {
         const audioEls = [];
+        const sessions = [...Object.keys(this.props.sessionsMap || [])]
         for (const track of tracks) {
             const audioEl = document.createElement('audio');
             audioEl.srcObject = new MediaStream([track]);
@@ -393,12 +395,14 @@ export default class CallWidget extends React.PureComponent<Props, State> {
                 audioEl.setSinkId(deviceID);
             }
 
+            if (sessions.some(s => this.props.myPreferences?.mutedSessions?.[s] && s.includes(track.id))) {
+                audioEl.muted = true
+            }
             document.body.appendChild(audioEl);
             track.onended = () => {
                 audioEl.srcObject = null;
                 audioEl.remove();
             };
-
             audioEls.push(audioEl);
         }
 
@@ -814,12 +818,16 @@ export default class CallWidget extends React.PureComponent<Props, State> {
         }
     };
 
-    onMuteToggleSession= (sessionId: string) => {
+    getAudioForSession = (sessionId: string) => {
+        return this.state.audioEls.find(v => v.dataset[audioTrackID]?.includes(sessionId))
+    }
+
+    onMuteToggleSession = (sessionId: string) => {
         if (!window.callsClient) {
             return;
         }
 
-        const audio = this.state.audioEls.find(v => v.dataset[audioTrackID]?.includes(sessionId))
+        const audio = this.getAudioForSession(sessionId)
         if (!audio) {
             return
         }

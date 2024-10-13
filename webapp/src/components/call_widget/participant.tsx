@@ -1,27 +1,23 @@
-import {UserSessionState} from '@mattermost/calls-common/lib/types';
-import {UserProfile} from '@mattermost/types/users';
-import { savePreferences } from 'mattermost-redux/actions/preferences';
-import {Client4} from 'mattermost-redux/client';
-import React, {CSSProperties, useEffect, useState} from 'react';
-import {useIntl} from 'react-intl';
+import { UserSessionState } from '@mattermost/calls-common/lib/types';
+import { UserProfile } from '@mattermost/types/users';
+import { Client4 } from 'mattermost-redux/client';
+import React, { CSSProperties, useEffect, useState } from 'react';
+import { useIntl } from 'react-intl';
 import Avatar from 'src/components/avatar/avatar';
-import {HostBadge} from 'src/components/badge';
-import DotMenu, {DotMenuButton} from 'src/components/dot_menu/dot_menu';
-import {Emoji} from 'src/components/emoji/emoji';
-import {useHostControls} from 'src/components/expanded_view/hooks';
-import {StyledDropdownMenu} from 'src/components/expanded_view/styled_components';
-import {HostControlsMenu} from 'src/components/host_controls_menu';
+import { HostBadge } from 'src/components/badge';
+import DotMenu, { DotMenuButton } from 'src/components/dot_menu/dot_menu';
+import { Emoji } from 'src/components/emoji/emoji';
+import { useHostControls } from 'src/components/expanded_view/hooks';
+import { StyledDropdownMenu } from 'src/components/expanded_view/styled_components';
+import { HostControlsMenu } from 'src/components/host_controls_menu';
 import HandEmoji from 'src/components/icons/hand';
 import MutedIcon from 'src/components/icons/muted_icon';
 import ScreenIcon from 'src/components/icons/screen_icon';
-import {ThreeDotsButton} from 'src/components/icons/three_dots';
+import { ThreeDotsButton } from 'src/components/icons/three_dots';
 import UnmutedIcon from 'src/components/icons/unmuted_icon';
-import {getUserDisplayName} from 'src/utils';
-import styled, {css} from 'styled-components';
-
-type ClientSideProps = {
-    mutedSessions: Record<string, boolean>
-}
+import { ClientSideProps } from 'src/types/types';
+import { getUserDisplayName } from 'src/utils';
+import styled, { css } from 'styled-components';
 
 type Props = {
     session: UserSessionState;
